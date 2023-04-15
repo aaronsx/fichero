@@ -17,7 +17,7 @@ public class ImpFichero implements IntFichero
 	@Override
 	public void AbrirFichero(File archivo,List<Usuarios>bd) 
 	{
-		
+		//Creamos el fr para luego en el try controlar si se abre bien o no
 		FileReader fr=null;
 		try {
 			fr = new FileReader (archivo);
@@ -37,18 +37,14 @@ public class ImpFichero implements IntFichero
 	
 	@Override
 	public void LeerFichero(FileReader fr,List<Usuarios>bd) {
-			String [] divi=null;
-			Usuarios nue =new Usuarios();
+			
+			//declaramos dentro del try el buffer ya que se utiliza para recorrer las lineas no hace falta sacarlo fuera
 		try {
 			BufferedReader br =  new BufferedReader(fr);
 
 	         String linea;
 	         while((linea=br.readLine())!=null){
-	        	 divi=linea.split(";");
-	        	 nue.setNombre(divi[0]);
-	        	 nue.setApellidos(divi[1]);
-	        	 nue.setEdad(Integer.parseInt(divi[3]));
-	        	 bd.add(nue);
+	        	 guardar(linea,bd);
 	        	 
 	         }
 	            
@@ -56,7 +52,7 @@ public class ImpFichero implements IntFichero
 	      catch(Exception e){
 	         e.printStackTrace();
 	      }finally{
-	         
+	         //Como si o si pasa por aqui con el finally pues llamo al metodo cerrar
 	         try{                    
 	        	 CerrarFichero(fr);
 	                             
@@ -66,13 +62,26 @@ public class ImpFichero implements IntFichero
 	      }
 		
 	}
-	
+	//Este metodo lo he puesto privado ya que quiero que solo esta clase pueda tener acceso 
+	//Este metodo recibe un string de la linea y la lista para guardarlo 
+	private void guardar(String linea,List<Usuarios>bd )
+	{
+		//dentro le haces un split para guadarlo en un vector separando por ;
+		String [] divi=null;
+		Usuarios nue =new Usuarios();
+		
+		divi=linea.split(";");
+   	 	nue.setNombre(divi[0]);
+   	 	nue.setApellidos(divi[1]);
+   	 	nue.setEdad(Integer.parseInt(divi[2]));
+   	 	bd.add(nue);
+	}
 
 	@Override
 	public void CerrarFichero(FileReader fr) 
 	{
 		
-		
+		//en metodo cerrar con el try controlo si se cierra o no y con el if veo si fr se ha podido abrir
 			try {
 				if (null != fr)
 				fr.close();
